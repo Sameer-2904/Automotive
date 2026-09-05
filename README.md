@@ -27,21 +27,6 @@ Earlier drafts loaded Three.js, GSAP, ScrollTrigger, and Lenis from public CDNs.
 
 Fonts use the system default stack (`-apple-system, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif`) rather than a custom webfont, for the same reason: one less thing that can fail to load.
 
-## Deployment
-
-Any static host works. A few common options:
-
-**GitHub Pages**
-1. Commit `index.html` to your repository (rename it if your host expects a different entry filename).
-2. Enable Pages in the repo settings, pointing at the branch/folder containing it.
-
-**Netlify / Vercel / Cloudflare Pages**
-Drag-and-drop the file (or the folder containing it) into the dashboard, or connect the repo — no build command needed, no framework preset required.
-
-**Anywhere else**
-Any server that can serve a static `.html` file will work — S3 + CloudFront, nginx, Apache, etc.
-
-There is no `npm install`, no build step, and no environment configuration.
 
 ## Feature overview
 
