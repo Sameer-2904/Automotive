@@ -249,12 +249,17 @@ h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-0.01em;line-
 .etag .lab{font-size:9.5px;letter-spacing:.13em;color:var(--fg-faint);display:block;}
 .etag .val{font-size:11.5px;letter-spacing:.03em;color:var(--fg);margin-top:3px;display:block;}
 
+/* Mobile-only static engineering summary — hidden on desktop, where this content is
+   revealed instead via the pinned scroll/hotspot/exploded-view sequence. */
+.mobile-engineering{display:none;}
+
 /* ============================= VELOCITY EDITORIAL ============================= */
 #velocity{position:relative;background:var(--bg);padding:min(16vw,220px) 0;overflow:hidden;}
 .section-number{position:absolute;top:min(5vw,50px);right:clamp(20px,6vw,80px);font-family:var(--display);font-size:clamp(52px,8vw,120px);font-weight:800;color:transparent;-webkit-text-stroke:1px var(--line-strong);line-height:1;pointer-events:none;user-select:none;z-index:0;}
 .float-spec{position:absolute;font-size:10px;letter-spacing:.1em;color:var(--fg-faint);pointer-events:none;opacity:.85;}
 .float-spec b{color:var(--fg-faint);display:block;font-size:9.5px;letter-spacing:.15em;margin-bottom:5px;font-weight:400;}
 .float-spec span{color:var(--fg-muted);font-size:13px;letter-spacing:.02em;font-family:var(--display);font-weight:600;}
+.vel-mobile-specs{display:none;}
 .section-noise{position:absolute;inset:0;pointer-events:none;opacity:.035;mix-blend-mode:overlay;z-index:0;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
 .light-sweep{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;}
@@ -446,6 +451,43 @@ footer{background:#08080a;border-top:1px solid var(--line);padding:min(6vw,64px)
   .hero-cta{position:relative;right:auto;bottom:auto;align-items:flex-start;padding:0 20px;margin-top:30px;}
   .hero-copy{position:relative;padding-top:calc(var(--nav-h) + 20px);justify-content:flex-start;height:100svh;}
   .scroll-hint{bottom:22px;}
+
+  /* the scroll-scrubbed hotspot/exploded-view choreography is skipped on mobile
+     (see isNarrow in JS) — hide the now-inert desktop elements so they don't linger
+     invisibly in the accessibility tree, and show the static mobile summary instead. */
+  .hotspot-layer,.exploded-caption,.exploded-tags,.stage-label{display:none;}
+  .mobile-engineering{display:block;padding:64px 20px;background:var(--bg-elev);}
+  .me-head{margin-bottom:40px;}
+  .me-head h3{font-family:var(--display);font-size:clamp(28px,7.5vw,38px);font-weight:700;margin:14px 0 12px;line-height:1.05;}
+  .me-head p{color:var(--fg-muted);font-size:14px;line-height:1.6;max-width:46ch;}
+  .me-list{display:flex;flex-direction:column;gap:1px;background:var(--line);}
+  .me-item{background:var(--bg-elev);padding:26px 0;display:flex;gap:16px;}
+  .me-idx{font-family:var(--display);font-size:12px;color:var(--accent);letter-spacing:.05em;flex:none;width:22px;padding-top:2px;}
+  .me-item h4{font-family:var(--display);font-size:16px;font-weight:700;margin-bottom:8px;}
+  .me-item p{font-size:13.5px;color:var(--fg-muted);line-height:1.6;}
+  .me-spec{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;font-size:11px;letter-spacing:.06em;color:var(--fg-faint);}
+  .me-spec b{color:var(--accent);font-weight:500;}
+
+  /* velocity section: desktop's scattered floating spec tags collide with each other
+     and with the paragraph in a narrow column — replace with a clean stacked strip */
+  .float-spec{display:none;}
+  .section-number{font-size:56px;top:20px;}
+  .vel-mobile-specs{display:flex;flex-direction:column;gap:18px;margin-top:36px;padding:0 24px;}
+  .vel-mobile-specs div{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:12px;}
+  .vel-mobile-specs span{font-size:10.5px;letter-spacing:.1em;color:var(--fg-faint);}
+  .vel-mobile-specs b{font-family:var(--display);font-size:14px;color:var(--fg-muted);font-weight:600;}
+
+  /* smaller, tighter floating controls so they overlap less content in a narrow column */
+  #float-controls{bottom:16px;right:16px;gap:8px;}
+  .fc-btn{width:38px;height:38px;}
+  .fc-btn svg{width:15px;height:15px;}
+
+  /* enlarge touch targets on interactive dots to a real 44px hit area without
+     changing their visual size */
+  .c-hotspot{width:44px;height:44px;}
+  .c-hotspot button{width:44px;height:44px;top:0;left:0;background:transparent;border:none;display:flex;align-items:center;justify-content:center;}
+  .c-hotspot button::before{content:'';display:block;width:14px;height:14px;border-radius:50%;border:1px solid var(--accent);background:rgba(201,168,118,.25);}
+  .c-hotspot button::after{inset:auto;width:30px;height:30px;top:50%;left:50%;transform:translate(-50%,-50%);}
 }
 </style>
 </head>
@@ -594,6 +636,45 @@ footer{background:#08080a;border-top:1px solid var(--line);padding:min(6vw,64px)
         </div>
       </div>
     </div>
+
+    <!-- MOBILE ENGINEERING SUMMARY — on desktop this content is revealed via the pinned
+         scroll-driven hotspots and exploded view above. That scroll choreography is
+         intentionally skipped on mobile (see isNarrow in the JS), so without this block
+         the six engineering callouts and the exploded-view moment would be entirely
+         invisible on phones. This static list keeps the same content reachable. -->
+    <div class="mobile-engineering">
+      <div class="me-head">
+        <div class="eyebrow"><span class="dot"></span>ENGINEERING</div>
+        <h3>Every component has a purpose.</h3>
+        <p>Nothing added without reason. Nothing removed without cost. The V-01 comes apart the way it was built — deliberately.</p>
+      </div>
+      <div class="me-list">
+        <div class="me-item">
+          <span class="me-idx">01</span>
+          <div><h4>CARBON MONOCOQUE</h4><p>Ultra-light structural architecture engineered for maximum rigidity with minimal mass.</p><div class="me-spec"><span>TOLERANCE</span><b>±0.05MM</b></div></div>
+        </div>
+        <div class="me-item">
+          <span class="me-idx">02</span>
+          <div><h4>ACTIVE AERO</h4><p>Surfaces that shift shape in real time, converting airflow into usable downforce.</p><div class="me-spec"><span>RESPONSE</span><b>40MS</b></div></div>
+        </div>
+        <div class="me-item">
+          <span class="me-idx">03</span>
+          <div><h4>HYBRID POWERTRAIN</h4><p>Twin electric motors paired with a twin-turbo core deliver instant, layered thrust.</p><div class="me-spec"><span>SYSTEM</span><b>400V</b></div></div>
+        </div>
+        <div class="me-item">
+          <span class="me-idx">04</span>
+          <div><h4>CERAMIC BRAKING</h4><p>Carbon-ceramic discs shed heat rapidly, resisting fade through repeated hard stops.</p><div class="me-spec"><span>ROTOR</span><b>390MM</b></div></div>
+        </div>
+        <div class="me-item">
+          <span class="me-idx">05</span>
+          <div><h4>ADAPTIVE SUSPENSION</h4><p>Sensors read the road a thousand times a second, adjusting damping before you feel it.</p><div class="me-spec"><span>SAMPLE RATE</span><b>1000HZ</b></div></div>
+        </div>
+        <div class="me-item">
+          <span class="me-idx">06</span>
+          <div><h4>FORGED ALUMINUM</h4><p>Chassis nodes forged, not cast, for a structure that survives what casting cannot.</p><div class="me-spec"><span>ALLOY</span><b>7075-T6</b></div></div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- =========== FORM FOLLOWS VELOCITY =========== -->
@@ -612,6 +693,11 @@ footer{background:#08080a;border-top:1px solid var(--line);padding:min(6vw,64px)
       </div>
     </div>
     <p class="vel-note">Every surface exists for a reason. <em>Nothing added without purpose.</em> The V-01's body was not styled — it was resolved, panel by panel, against the air moving over it at 340 km/h.</p>
+    <div class="vel-mobile-specs" aria-hidden="true">
+      <div><span>DRAG COEFFICIENT</span><b>Cd 0.31</b></div>
+      <div><span>DOWNFORCE</span><b>620KG @ 300KM/H</b></div>
+      <div><span>FRONTAL AREA</span><b>1.82M²</b></div>
+    </div>
   </section>
 
   <!-- =========== PERFORMANCE =========== -->
